@@ -10,6 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "simple-oauth2": "^0.8.0"
+    "node-outlook": "^1.1.6",
+    "simple-oauth2": "^0.8.0",
+    "url": "^0.11.0"
   }
 }
