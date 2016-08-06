@@ -1,2 +1,4 @@
 /.idea
 /node_modules
+Would skip repository client-web/
+server/node_modules
