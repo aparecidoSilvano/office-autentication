@@ -17,10 +17,16 @@ server.start(router.route, handle);
 
 function home(response, request) {
     console.log("Request handler 'home' was called.");
-    response.writeHead(200, {"Content-Type": "text/html"});
-    response.write('<p>Please <a href="' + authHelper.getAuthUrl() + '">sign in</a>' +
-        ' with your Office 365 or Outlook.com account.</p>');
-    response.end();
+    response.writeHead(200, {"Content-Type": "application/json", 'access-Control-Allow-Origin': '*'});
+    /*response.write('<p>Please <a href="' + authHelper.getAuthUrl() + '">sign in</a>' +
+     ' with your Office 365 or Outlook.com account.</p>');*/
+    //console.log('url=' + authHelper.getAuthUrl());
+    //response.send(authHelper.getAuthUrl());
+    //response.end();
+    var queryObject = url.parse(request.url, true).query;
+    console.log(queryObject.client);
+
+    response.end(JSON.stringify({url: authHelper.getAuthUrl()}));
 }
 
 /*

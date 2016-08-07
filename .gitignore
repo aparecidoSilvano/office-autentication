@@ -2,3 +2,5 @@
 /node_modules
 Would skip repository client-web/
 server/node_modules
+front-end/bower_components
+front-end/node_modules
