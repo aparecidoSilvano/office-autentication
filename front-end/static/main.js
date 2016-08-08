@@ -61,7 +61,7 @@ app.controller('LoginCtr', function ($scope, $state, $auth, $window, $q, $http, 
         }).then(function successCallback(response) {
             console.log('sucesso pra chamar o servidor');
             $timeout(function () {
-                office365Auth($window, $q, response.data.url);
+                office365Auth($window, $q, response.data.url, $http);
             });
 
         }, function errorCallback(response) {
@@ -76,7 +76,7 @@ urlBuilder.push('client_id=' + clientId,
     'redirect_uri=' + window.location.origin,
     'response_type=code');
 
-var office365Auth = function ($window, $q, url) {
+var office365Auth = function ($window, $q, url, $http) {
     /*var url = 'https://login.microsoftonline.com/fd4f1e86-7cb0-4ac4-9600-a0e331f0ee06/oauth2/authorize?'
      + urlBuilder.join('&');*/
     var options = "width=500, height=500, left=" + ($window.outerWidth - 500) / 2 + ",top=" + ($window.outerHeight - 500) / 2.5;
@@ -84,19 +84,36 @@ var office365Auth = function ($window, $q, url) {
     var popup = $window.open(url, '_blank', options);
     $window.focus();
 
+
+    $http({
+        method: 'GET',
+        url: 'http://localhost:8080/loged',
+        params: {
+            client: 'CLIENT_WEB', callback: function () {
+                console.log('chamou o callback passado como parametro pro back.');
+            }
+        }
+    }).then(function successCallback(response) {
+        console.log('DEUS é bom o tempo todo e o tempo todo Deus é bom');
+        popup.close();
+    }, function errorCallback(response) {
+        console.log('DEUS é bom o tempo todo e o tempo todo Deus é bom');
+    });
+
+
     $window.addEventListener('message', function (event) {
         console.log('Entrou no eventListner, COM CLOSE');
     }, true);
 
     // captura quando a janela fecha.
-    var pollTimer = $window.setInterval(function() {
+    var pollTimer = $window.setInterval(function () {
         if (popup.closed !== false) { // !== is required for compatibility with Opera
             $window.clearInterval(pollTimer);
             console.log('Fechou a janela!!!!!!!!!!!!!!!');
         }
     }, 200);
 
-    $window.addEventListener('message', function (event) {
+    window.addEventListener('message', function (event) {
         console.log('Entrou no callback do addEventListner');
         if (event.origin === $window.location.origin) {
             var code = event.data;

@@ -6,14 +6,22 @@ var router = require('./router');
 var authHelper = require('./authHelper');
 var url = require('./node_modules/url/url');
 var outlook = require('node-outlook');
+var frontCallback;
 
 var handle = {};
 handle["/"] = home;
 handle['/authorize'] = authorize;
 handle['/mail'] = mail;
 handle['/calendar'] = calendar;
+handle['/loged'] = loged;
 
 server.start(router.route, handle);
+
+function loged(response, request) {
+    var queryObject = url.parse(request.url, true).query;
+    frontCallback = response;
+    console.log('LOGED --> quem é o frontCallback? =' + frontCallback);
+}
 
 function home(response, request) {
     console.log("Request handler 'home' was called.");
@@ -25,6 +33,7 @@ function home(response, request) {
     //response.end();
     var queryObject = url.parse(request.url, true).query;
     console.log(queryObject.client);
+    console.log(queryObject.location);
 
     response.end(JSON.stringify({url: authHelper.getAuthUrl()}));
 }
@@ -34,6 +43,11 @@ function home(response, request) {
  */
 function authorize(response, request) {
     console.log('request handler authorize was called.');
+    console.log('AUTHORIZE --> quem é o frontCallback? =' + frontCallback);
+
+    frontCallback.writeHead(200, {"Content-Type": "application/json", 'access-Control-Allow-Origin': '*'})
+    frontCallback.end(JSON.stringify({msg: 'User Authenticaded'}));
+
 
     // The authorization code is passed as a query parameter
     var url_parts = url.parse(request.url, true);
